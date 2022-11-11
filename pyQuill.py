@@ -14,6 +14,11 @@ class MainWindow(QMainWindow):
         layout = QVBoxLayout()
         self.editor = QTextEdit()
 
+        # Setup font
+        font = QFont('Ubuntu', 12)
+        self.editor.setFont(font)
+        self.editor.setFont(font)
+
         # self.path holds the path of the currently open file.
         # If none, we haven't got a file open yet (or creating new).
         self.path = None
