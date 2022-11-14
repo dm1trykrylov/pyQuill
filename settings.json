@@ -1,0 +1,7 @@
+{
+  "title" : "pyQuill",
+  "default_font": {
+    "font_name": "Ubuntu",
+    "size": 12
+  }
+}
