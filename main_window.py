@@ -1,7 +1,7 @@
 from PyQt5.QtGui import QFont
 
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, QFile, QTextStream
 from PyQt5.QtPrintSupport import QPrintDialog
 
 import os
@@ -10,6 +10,7 @@ from utility import *
 
 import json
 import qdarktheme
+
 
 class MainWindow(QMainWindow):
 
@@ -21,7 +22,10 @@ class MainWindow(QMainWindow):
         config = json.load(config_file)
 
         # Set theme
-        self.toggle_theme(config['theme'])
+        if config['use_default_theme'] == True:
+             self.toggle_theme_default(config['theme'])
+        else:
+            self.toggle_theme_custom(config['stylesheet'])
 
         # Setup the QTextEdit editor configuration
         layout = QVBoxLayout()
@@ -70,6 +74,7 @@ class MainWindow(QMainWindow):
         set_paste_action(edit_toolbar, edit_menu, self)
         set_select_action(edit_menu, self)
         set_wrap_action(edit_menu, self)
+        #set_find_action(edit_menu, self)
 
         self.update_title()
         self.show()
@@ -81,12 +86,22 @@ class MainWindow(QMainWindow):
         dlg.setIcon(QMessageBox.Critical)
         dlg.show()
 
-    def toggle_theme(self, theme):
+    def toggle_theme_default(self, theme):
         try:
             app = QApplication.instance()
             app.setStyleSheet(qdarktheme.load_stylesheet(theme))
         except Exception as e:
-            self.show_error(e);
+            self.show_error(e)
+
+    def toggle_theme_custom(self, path):
+        try:
+            app = QApplication.instance()
+            file = QFile(path)
+            file.open(QFile.ReadOnly | QFile.Text)
+            stream = QTextStream(file)
+            app.setStyleSheet(stream.readAll())
+        except Exception as e:
+            self.show_error(e)
 
     def open_file(self):
         path, _ = QFileDialog.getOpenFileName(
