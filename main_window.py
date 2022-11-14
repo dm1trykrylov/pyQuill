@@ -9,7 +9,7 @@ import os
 from utility import *
 
 import json
-
+import qdarktheme
 
 class MainWindow(QMainWindow):
 
@@ -19,6 +19,9 @@ class MainWindow(QMainWindow):
         # Open configuration file
         config_file = open('settings.json')
         config = json.load(config_file)
+
+        # Set theme
+        self.toggle_theme(config['theme'])
 
         # Setup the QTextEdit editor configuration
         layout = QVBoxLayout()
@@ -77,6 +80,13 @@ class MainWindow(QMainWindow):
         dlg.setText(s)
         dlg.setIcon(QMessageBox.Critical)
         dlg.show()
+
+    def toggle_theme(self, theme):
+        try:
+            app = QApplication.instance()
+            app.setStyleSheet(qdarktheme.load_stylesheet(theme))
+        except Exception as e:
+            self.show_error(e);
 
     def open_file(self):
         path, _ = QFileDialog.getOpenFileName(
