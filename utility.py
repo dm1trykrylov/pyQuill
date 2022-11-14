@@ -7,7 +7,7 @@ def set_open_file_action(file_menu, file_toolbar, window):
     open_file_action = QAction(QIcon(os.path.join(
         'images', 'blue-folder-open-document.png')), "Open file...", window)
     open_file_action.setStatusTip("Open file")
-    open_file_action.triggered.connect(window.file_open)
+    open_file_action.triggered.connect(window.open_file)
     file_menu.addAction(open_file_action)
     file_toolbar.addAction(open_file_action)
 
@@ -16,7 +16,7 @@ def set_save_file_action(file_menu, file_toolbar, window):
     save_file_action = QAction(
         QIcon(os.path.join('images', 'disk.png')), "Save", window)
     save_file_action.setStatusTip("Save current page")
-    save_file_action.triggered.connect(window.file_save)
+    save_file_action.triggered.connect(window.save_file)
     file_menu.addAction(save_file_action)
     file_toolbar.addAction(save_file_action)
 
@@ -25,7 +25,7 @@ def set_saveas_file_action(file_menu, file_toolbar, window):
     saveas_file_action = QAction(
         QIcon(os.path.join('images', 'disk--pencil.png')), "Save As...", window)
     saveas_file_action.setStatusTip("Save current page to specified file")
-    saveas_file_action.triggered.connect(window.file_saveas)
+    saveas_file_action.triggered.connect(window.saveas_file)
     file_menu.addAction(saveas_file_action)
     file_toolbar.addAction(saveas_file_action)
 
@@ -34,7 +34,7 @@ def set_print_action(file_menu, file_toolbar, window):
     print_action = QAction(
         QIcon(os.path.join('images', 'printer.png')), "Print...", window)
     print_action.setStatusTip("Print current page")
-    print_action.triggered.connect(window.file_print)
+    print_action.triggered.connect(window.print_file)
     file_menu.addAction(print_action)
     file_toolbar.addAction(print_action)
 

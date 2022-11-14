@@ -1,8 +1,8 @@
-from PyQt5.QtGui import QIcon, QFont
+from PyQt5.QtGui import QFont
 
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtPrintSupport import *
+from PyQt5.QtCore import QSize
+from PyQt5.QtPrintSupport import QPrintDialog
 
 import os
 
