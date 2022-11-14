@@ -3,5 +3,6 @@
   "default_font": {
     "font_name": "Ubuntu",
     "size": 12
-  }
+  },
+  "theme" : "dark"
 }
