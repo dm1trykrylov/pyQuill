@@ -100,3 +100,12 @@ def set_wrap_action(edit_menu, window):
     wrap_action.setChecked(True)
     wrap_action.triggered.connect(window.edit_toggle_wrap)
     edit_menu.addAction(wrap_action)
+
+def set_find_action(edit_menu, window):
+    find_action = QAction(QIcon(os.path.join(
+        'images', 'arrow-continue.png')), "Wrap text to window", window)
+    find_action.setStatusTip("Toggle wrap text to window")
+    find_action.setCheckable(True)
+    find_action.setChecked(True)
+    find_action.triggered.connect(window.find_word)
+    edit_menu.addAction(find_action)

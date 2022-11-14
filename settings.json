@@ -4,5 +4,7 @@
     "font_name": "Ubuntu",
     "size": 12
   },
-  "theme" : "dark"
+  "theme" : "white",
+  "use_default_theme" : true,
+  "stylesheet" : ""
 }
