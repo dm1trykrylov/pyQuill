@@ -88,10 +88,11 @@ class MainWindow(QMainWindow):
 
     def toggle_theme_default(self, theme):
         try:
-            app = QApplication.instance()
-            app.setStyleSheet(qdarktheme.load_stylesheet(theme))
+            if theme == 'dark':
+                app = QApplication.instance()
+                app.setStyleSheet(qdarktheme.load_stylesheet(theme))
         except Exception as e:
-            self.show_error(e)
+            self.show_error(self, e)
 
     def toggle_theme_custom(self, path):
         try:
