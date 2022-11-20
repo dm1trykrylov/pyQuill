@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QFont
 
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QMessageBox,QPlainTextEdit, QToolBar, QStatusBar,  QVBoxLayout, QWidget
 from PyQt5.QtCore import QSize, QFile, QTextStream
 from PyQt5.QtPrintSupport import QPrintDialog
 
@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
 
         # Set theme
         if config['use_default_theme'] == True:
-             self.toggle_theme_default(config['theme'])
+            self.toggle_theme_default(config['theme'])
         else:
             self.toggle_theme_custom(config['stylesheet'])
 
