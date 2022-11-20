@@ -3,21 +3,21 @@ from PyQt5.QtWidgets import QAction
 import os
 
 
-def set_open_file_action(file_menu, file_toolbar, window):
+def set_open_file_action(file_menu, file_toolbar, shortcut, window):
     open_file_action = QAction(QIcon(os.path.join(
         'images', 'blue-folder-open-document.png')), 'Open file...', window)
     open_file_action.setStatusTip('Open file')
-    open_file_action.setShortcut('Ctrl+O')
+    open_file_action.setShortcut(QKeySequence(shortcut))
     open_file_action.triggered.connect(window.open_file)
     file_menu.addAction(open_file_action)
     file_toolbar.addAction(open_file_action)
 
 
-def set_save_file_action(file_menu, file_toolbar, window):
+def set_save_file_action(file_menu, file_toolbar, shortcut, window):
     save_file_action = QAction(
         QIcon(os.path.join('images', 'disk.png')), 'Save', window)
     save_file_action.setStatusTip('Save current page')
-    save_file_action.setShortcut('Ctrl+S')
+    save_file_action.setShortcut(QKeySequence(shortcut))
     save_file_action.triggered.connect(window.save_file)
     file_menu.addAction(save_file_action)
     file_toolbar.addAction(save_file_action)
@@ -27,17 +27,16 @@ def set_saveas_file_action(file_menu, file_toolbar, window):
     saveas_file_action = QAction(
         QIcon(os.path.join('images', 'disk--pencil.png')), "Save As...", window)
     saveas_file_action.setStatusTip("Save current page to specified file")
-    #saveas_file_action.setShortcut('Ctrl+S')
     saveas_file_action.triggered.connect(window.saveas_file)
     file_menu.addAction(saveas_file_action)
     file_toolbar.addAction(saveas_file_action)
 
 
-def set_print_action(file_menu, file_toolbar, window):
+def set_print_action(file_menu, file_toolbar, shortcut, window):
     print_action = QAction(
         QIcon(os.path.join('images', 'printer.png')), "Print...", window)
     print_action.setStatusTip("Print current page")
-    print_action.setShortcut('Ctrl+P')
+    print_action.setShortcut(QKeySequence(shortcut))
     print_action.triggered.connect(window.print_file)
     file_menu.addAction(print_action)
     file_toolbar.addAction(print_action)

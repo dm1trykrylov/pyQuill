@@ -1,6 +1,6 @@
 from PyQt5.QtGui import QFont
 
-from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QMessageBox,QPlainTextEdit, QToolBar, QStatusBar,  QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QMessageBox,QPlainTextEdit, QToolBar, QStatusBar,  QVBoxLayout, QWidget, QShortcut
 from PyQt5.QtCore import QSize, QFile, QTextStream
 from PyQt5.QtPrintSupport import QPrintDialog
 
@@ -53,10 +53,10 @@ class MainWindow(QMainWindow):
         file_menu = self.menuBar().addMenu("&File")
 
         # Set standard file actions
-        set_open_file_action(file_menu, file_toolbar, self)
-        set_save_file_action(file_menu, file_toolbar, self)
+        set_open_file_action(file_menu, file_toolbar, config['shortcuts']['open'], self)
+        set_save_file_action(file_menu, file_toolbar, config['shortcuts']['save'], self)
         set_saveas_file_action(file_menu, file_toolbar, self)
-        set_print_action(file_menu, file_toolbar, self)
+        set_print_action(file_menu, file_toolbar, config['shortcuts']['print'], self)
 
         # Set standard operations
         edit_toolbar = QToolBar("Edit")

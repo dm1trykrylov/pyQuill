@@ -4,6 +4,11 @@
     "font_name": "Ubuntu",
     "size": 12
   },
+  "shortcuts": {
+    "open": "Ctrl+O",
+    "save": "Ctrl+S",
+    "print": "Ctrl+P"
+  },
   "theme" : "white",
   "use_default_theme" : true,
   "stylesheet" : ""
