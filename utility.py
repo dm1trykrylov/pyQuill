@@ -106,12 +106,12 @@ def set_wrap_action(edit_menu, window):
     edit_menu.addAction(wrap_action)
 
 
-def set_find_action(edit_menu, window):
+def set_find_action(edit_menu, shortcut, window):
 
     find_action = QAction(QIcon(os.path.join(
         'images', 'arrow-continue.png')), "Find", window)
     find_action.setStatusTip("Find word")
-    find_action.setShortcut(QKeySequence('Ctrl+F'))
+    find_action.setShortcut(QKeySequence(shortcut))
     find_action.triggered.connect(window.Find_word)
     edit_menu.addAction(find_action)
 

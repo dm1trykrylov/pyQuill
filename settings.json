@@ -7,7 +7,8 @@
   "shortcuts": {
     "open": "Ctrl+O",
     "save": "Ctrl+S",
-    "print": "Ctrl+P"
+    "print": "Ctrl+P",
+    "find": "Ctrl+F"
   },
   "theme" : "dark",
   "use_default_theme" : true,
