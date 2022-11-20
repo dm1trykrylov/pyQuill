@@ -74,7 +74,6 @@ class MainWindow(QMainWindow):
         set_paste_action(edit_toolbar, edit_menu, self)
         set_select_action(edit_menu, self)
         set_wrap_action(edit_menu, self)
-        #set_find_action(edit_menu, self)
 
         self.update_title()
         self.show()
