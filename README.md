@@ -37,7 +37,7 @@ Run pyQuill
 It's easy to design your own themes using `settings.json`.
 * Change `default_font` field to set another font
 * Change `theme` to dark to use default dark theme or
-* set `use_default_theme` to __true__ and privide path to your stylesheet in `stylesheet`
+* set `use_default_theme` to __true__ and provide path to your stylesheet in `stylesheet`
 
 # Contacts
 * Name: Dmitry Krylov
