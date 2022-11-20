@@ -9,7 +9,7 @@
     "save": "Ctrl+S",
     "print": "Ctrl+P"
   },
-  "theme" : "white",
+  "theme" : "dark",
   "use_default_theme" : true,
   "stylesheet" : ""
 }
