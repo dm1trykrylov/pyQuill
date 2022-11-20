@@ -1,5 +1,6 @@
-from PyQt5.QtGui import QIcon, QKeySequence
+from PyQt5.QtGui import QIcon, QKeySequence, QBrush, QColor, QTextCharFormat, QTextCursor
 from PyQt5.QtWidgets import QAction
+from PyQt5.QtCore import QRegularExpression
 import os
 
 
@@ -104,11 +105,14 @@ def set_wrap_action(edit_menu, window):
     wrap_action.triggered.connect(window.edit_toggle_wrap)
     edit_menu.addAction(wrap_action)
 
+
 def set_find_action(edit_menu, window):
+
     find_action = QAction(QIcon(os.path.join(
-        'images', 'arrow-continue.png')), "Wrap text to window", window)
-    find_action.setStatusTip("Toggle wrap text to window")
-    find_action.setCheckable(True)
-    find_action.setChecked(True)
-    find_action.triggered.connect(window.find_word)
+        'images', 'arrow-continue.png')), "Find", window)
+    find_action.setStatusTip("Find word")
+    find_action.setShortcut(QKeySequence('Ctrl+F'))
+    find_action.triggered.connect(window.Find_word)
     edit_menu.addAction(find_action)
+
+

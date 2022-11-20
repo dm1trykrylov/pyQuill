@@ -1,10 +1,14 @@
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QKeySequence
 
-from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QMessageBox,QPlainTextEdit, QToolBar, QStatusBar,  QVBoxLayout, QWidget, QShortcut
-from PyQt5.QtCore import QSize, QFile, QTextStream
+from PyQt5.QtWidgets import (QApplication,  QDialog, QFileDialog, QLabel, QMainWindow, QMessageBox, QPlainTextEdit, QToolBar, QStatusBar,
+                             QVBoxLayout, QWidget, QShortcut, QDialog, QLineEdit, QPushButton, QDialogButtonBox, QHBoxLayout, QGridLayout, QLayout)
+
+from PyQt5.QtCore import (QSize, QFile, QTextStream, Qt)
 from PyQt5.QtPrintSupport import QPrintDialog
 
 import os
+
+from contextlib import contextmanager
 
 from utility import *
 
@@ -53,10 +57,13 @@ class MainWindow(QMainWindow):
         file_menu = self.menuBar().addMenu("&File")
 
         # Set standard file actions
-        set_open_file_action(file_menu, file_toolbar, config['shortcuts']['open'], self)
-        set_save_file_action(file_menu, file_toolbar, config['shortcuts']['save'], self)
+        set_open_file_action(file_menu, file_toolbar,
+                             config['shortcuts']['open'], self)
+        set_save_file_action(file_menu, file_toolbar,
+                             config['shortcuts']['save'], self)
         set_saveas_file_action(file_menu, file_toolbar, self)
-        set_print_action(file_menu, file_toolbar, config['shortcuts']['print'], self)
+        set_print_action(file_menu, file_toolbar,
+                         config['shortcuts']['print'], self)
 
         # Set standard operations
         edit_toolbar = QToolBar("Edit")
@@ -74,16 +81,21 @@ class MainWindow(QMainWindow):
         set_paste_action(edit_toolbar, edit_menu, self)
         set_select_action(edit_menu, self)
         set_wrap_action(edit_menu, self)
+        set_find_action(edit_menu, self)
+        #QShortcut(QKeySequence('Ctrl+F'), self).activated(self.Find)
 
         self.update_title()
         self.show()
         config_file.close()
 
     def show_error(self, s):
-        dlg = QMessageBox(self)
-        dlg.setText(s)
-        dlg.setIcon(QMessageBox.Critical)
-        dlg.show()
+        errorDialog = QMessageBox(self)
+        errorDialog.addButton("Cancel", QMessageBox.ActionRole)
+
+        errorDialog.setWindowTitle("Find")
+        errorDialog.setText("Not Found {:s}.".format(s))
+        errorDialog.setIcon(QMessageBox.Critical)
+        errorDialog.exec_()
 
     def toggle_theme_default(self, theme):
         try:
@@ -162,3 +174,78 @@ class MainWindow(QMainWindow):
     def edit_toggle_wrap(self):
         self.editor.setLineWrapMode(
             1 if self.editor.lineWrapMode() == 0 else 0)
+
+    def Find_word(self):
+        self.findDialog = QDialog(self)
+
+        findLabel = QLabel("Find Word:")
+        self.lineEdit = QLineEdit()
+        self.lineEdit.setText("")
+        findLabel.setBuddy(self.lineEdit)
+
+        replaceLabel = QLabel("Replace Word:")
+        self.lineReplace = QLineEdit()
+        self.lineReplace.setText("")
+        replaceLabel.setBuddy(self.lineReplace)
+
+        self.findButton = QPushButton("Find Next")
+        self.findButton.setDefault(True)
+        self.findButton.clicked.connect(self.searchText)
+
+        self.replaceButton = QPushButton("Replace Next")
+        self.replaceButton.setDefault(False)
+        self.replaceButton.clicked.connect(self.replaceText)
+
+        buttonBox = QDialogButtonBox(Qt.Vertical)
+        buttonBox.addButton(
+            self.findButton, QDialogButtonBox.ActionRole)
+        buttonBox.addButton(
+            self.replaceButton, QDialogButtonBox.ActionRole)
+
+        topLeftLayout = QVBoxLayout()
+        topLeftLayout.addWidget(findLabel)
+        topLeftLayout.addWidget(self.lineEdit)
+        topLeftLayout.addWidget(replaceLabel)
+        topLeftLayout.addWidget(self.lineReplace)
+
+        leftLayout = QVBoxLayout()
+        leftLayout.addLayout(topLeftLayout)
+
+        mainLayout = QGridLayout()
+        mainLayout.setSizeConstraint(QLayout.SetFixedSize)
+        mainLayout.addLayout(leftLayout, 0, 0)
+        mainLayout.addWidget(buttonBox, 0, 1)
+        mainLayout.setRowStretch(2, 1)
+        self.findDialog.setLayout(mainLayout)
+
+        self.findDialog.setWindowTitle("Find")
+        self.findDialog.show()
+
+    def searchText(self, replace=False):
+        cursor = self.editor.textCursor()
+        findIndex = cursor.anchor()
+        text = self.lineEdit.text()
+        content = self.editor.toPlainText()
+        length = len(text)
+        index = content.find(text, findIndex)
+
+        if -1 == index:
+            self.show_error("Not Found {:s}.".format(text))
+        else:
+            start = index
+
+            cursor = self.editor.textCursor()
+            cursor.clearSelection()
+            cursor.movePosition(QTextCursor.Start,
+                                QTextCursor.MoveAnchor)
+            cursor.movePosition(QTextCursor.Right,
+                                QTextCursor.MoveAnchor, start + length)
+            cursor.movePosition(QTextCursor.Left,
+                                QTextCursor.KeepAnchor, length)
+            cursor.selectedText()
+            if replace:
+                cursor.insertText(self.lineReplace.text())
+            self.editor.setTextCursor(cursor)
+
+    def replaceText(self):
+        self.searchText(True)
