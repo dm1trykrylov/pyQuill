@@ -31,7 +31,7 @@ pip install -r requirements.txt
 ```
 
 Run pyQuill
-`python3 pyQuill.py`
+`python3 main.py`
 
 # Customization
 It's easy to design your own themes using `settings.json`.
