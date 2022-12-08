@@ -26,7 +26,7 @@ Default dark theme:
 # Installing
 Clone this repository and install requirements (pyQt5 required)
 ```
-git clone https://github.com/dm1trykrylov/pyQuill.git && cd pyQuill
+git clone https://github.com/dm1trykrylov/pyQuill.git && cd pyQuill && git checkout dev
 pip install -r requirements.txt
 ```
 
