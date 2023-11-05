@@ -1,16 +1,13 @@
-from PyQt5.QtGui import QFont, QKeySequence
+from PyQt5.QtGui import QFont, QKeySequence, QIcon, QTextCursor
 
 from PyQt5.QtWidgets import (QApplication,  QDialog, QFileDialog, QLabel, QMainWindow, QMessageBox, QPlainTextEdit, QToolBar, QStatusBar,
-                             QVBoxLayout, QWidget, QShortcut, QDialog, QLineEdit, QPushButton, QDialogButtonBox, QHBoxLayout, QGridLayout, QLayout)
+                             QVBoxLayout, QWidget, QDialog, QLineEdit, QPushButton, QDialogButtonBox, QGridLayout,
+                             QLayout, QAction)
 
 from PyQt5.QtCore import (QSize, QFile, QTextStream, Qt)
 from PyQt5.QtPrintSupport import QPrintDialog
 
 import os
-
-from contextlib import contextmanager
-
-from utility import *
 
 import json
 import qdarktheme
@@ -57,13 +54,13 @@ class MainWindow(QMainWindow):
         file_menu = self.menuBar().addMenu("&File")
 
         # Set standard file actions
-        set_open_file_action(file_menu, file_toolbar,
-                             config['shortcuts']['open'], self)
-        set_save_file_action(file_menu, file_toolbar,
-                             config['shortcuts']['save'], self)
-        set_saveas_file_action(file_menu, file_toolbar, self)
-        set_print_action(file_menu, file_toolbar,
-                         config['shortcuts']['print'], self)
+        self.set_open_file_action(file_menu, file_toolbar,
+                                  config['shortcuts']['open'])
+        self.set_save_file_action(file_menu, file_toolbar,
+                                  config['shortcuts']['save'])
+        self.set_saveas_file_action(file_menu, file_toolbar)
+        self.set_print_action(file_menu, file_toolbar,
+                              config['shortcuts']['print'])
 
         # Set standard operations
         edit_toolbar = QToolBar("Edit")
@@ -71,17 +68,17 @@ class MainWindow(QMainWindow):
         self.addToolBar(edit_toolbar)
         edit_menu = self.menuBar().addMenu("&Edit")
 
-        set_undo_action(edit_menu, edit_toolbar, self)
-        set_redo_action(edit_menu, edit_toolbar, self)
+        self.set_undo_action(edit_menu, edit_toolbar)
+        self.set_redo_action(edit_menu, edit_toolbar)
 
         edit_menu.addSeparator()
 
-        set_cut_action(edit_toolbar, edit_menu, self)
-        set_copy_action(edit_toolbar, edit_menu, self)
-        set_paste_action(edit_toolbar, edit_menu, self)
-        set_select_action(edit_menu, self)
-        set_wrap_action(edit_menu, self)
-        set_find_action(edit_menu, config['shortcuts']['find'], self)
+        self.set_cut_action(edit_toolbar, edit_menu)
+        self.set_copy_action(edit_toolbar, edit_menu)
+        self.set_paste_action(edit_toolbar, edit_menu)
+        self.set_select_action(edit_menu)
+        self.set_wrap_action(edit_menu)
+        self.set_find_action(edit_menu, config['shortcuts']['find'])
 
         self.update_title()
         self.show()
@@ -248,3 +245,103 @@ class MainWindow(QMainWindow):
 
     def replaceText(self):
         self.searchText(True)
+
+    def set_open_file_action(self, file_menu, file_toolbar, shortcut):
+        open_file_action = QAction(QIcon(os.path.join(
+            'images', 'blue-folder-open-document.png')), 'Open file...', self)
+        open_file_action.setStatusTip('Open file')
+        open_file_action.setShortcut(QKeySequence(shortcut))
+        open_file_action.triggered.connect(self.open_file)
+        file_menu.addAction(open_file_action)
+        file_toolbar.addAction(open_file_action)
+
+    def set_save_file_action(self, file_menu, file_toolbar, shortcut):
+        save_file_action = QAction(
+            QIcon(os.path.join('images', 'disk.png')), 'Save', self)
+        save_file_action.setStatusTip('Save current page')
+        save_file_action.setShortcut(QKeySequence(shortcut))
+        save_file_action.triggered.connect(self.save_file)
+        file_menu.addAction(save_file_action)
+        file_toolbar.addAction(save_file_action)
+
+    def set_saveas_file_action(self, file_menu, file_toolbar):
+        saveas_file_action = QAction(
+            QIcon(os.path.join('images', 'disk--pencil.png')), "Save As...", self)
+        saveas_file_action.setStatusTip("Save current page to specified file")
+        saveas_file_action.triggered.connect(self.saveas_file)
+        file_menu.addAction(saveas_file_action)
+        file_toolbar.addAction(saveas_file_action)
+
+    def set_print_action(self, file_menu, file_toolbar, shortcut):
+        print_action = QAction(
+            QIcon(os.path.join('images', 'printer.png')), "Print...", self)
+        print_action.setStatusTip("Print current page")
+        print_action.setShortcut(QKeySequence(shortcut))
+        print_action.triggered.connect(self.print_file)
+        file_menu.addAction(print_action)
+        file_toolbar.addAction(print_action)
+
+    def set_undo_action(self, edit_menu, edit_toolbar):
+        undo_action = QAction(
+            QIcon(os.path.join('images', 'arrow-curve-180-left.png')), "Undo", self)
+        undo_action.setStatusTip("Undo last change")
+        undo_action.triggered.connect(self.editor.undo)
+        edit_toolbar.addAction(undo_action)
+        edit_menu.addAction(undo_action)
+
+    def set_redo_action(self, edit_menu, edit_toolbar):
+        redo_action = QAction(
+            QIcon(os.path.join('images', 'arrow-curve.png')), "Redo", self)
+        redo_action.setStatusTip("Redo last change")
+        redo_action.triggered.connect(self.editor.redo)
+        edit_toolbar.addAction(redo_action)
+        edit_menu.addAction(redo_action)
+
+    def set_cut_action(self, edit_toolbar, edit_menu):
+        cut_action = QAction(
+            QIcon(os.path.join('images', 'scissors.png')), "Cut", self)
+        cut_action.setStatusTip("Cut selected text")
+        cut_action.triggered.connect(self.editor.cut)
+        edit_toolbar.addAction(cut_action)
+        edit_menu.addAction(cut_action)
+
+    def set_copy_action(self, edit_toolbar, edit_menu):
+        copy_action = QAction(
+            QIcon(os.path.join('images', 'document-copy.png')), "Copy", self)
+        copy_action.setStatusTip("Copy selected text")
+        copy_action.triggered.connect(self.editor.copy)
+        edit_toolbar.addAction(copy_action)
+        edit_menu.addAction(copy_action)
+
+    def set_paste_action(self, edit_toolbar, edit_menu):
+        paste_action = QAction(QIcon(os.path.join(
+            'images', 'clipboard-paste-document-text.png')), "Paste", self)
+        paste_action.setStatusTip("Paste from clipboard")
+        paste_action.triggered.connect(self.editor.paste)
+        edit_toolbar.addAction(paste_action)
+        edit_menu.addAction(paste_action)
+
+    def set_select_action(self, edit_menu):
+        select_action = QAction(
+            QIcon(os.path.join('images', 'selection-input.png')), "Select all", self)
+        select_action.setStatusTip("Select all text")
+        select_action.triggered.connect(self.editor.selectAll)
+        edit_menu.addAction(select_action)
+
+    def set_wrap_action(self, edit_menu):
+        wrap_action = QAction(QIcon(os.path.join(
+            'images', 'arrow-continue.png')), "Wrap text to window", self)
+        wrap_action.setStatusTip("Toggle wrap text to window")
+        wrap_action.setCheckable(True)
+        wrap_action.setChecked(True)
+        wrap_action.triggered.connect(self.edit_toggle_wrap)
+        edit_menu.addAction(wrap_action)
+
+    def set_find_action(self, edit_menu, shortcut):
+
+        find_action = QAction(QIcon(os.path.join(
+            'images', 'arrow-continue.png')), "Find", self)
+        find_action.setStatusTip("Find word")
+        find_action.setShortcut(QKeySequence(shortcut))
+        find_action.triggered.connect(self.Find_word)
+        edit_menu.addAction(find_action)

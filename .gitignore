@@ -130,3 +130,4 @@ dmypy.json
 
 # Debug
 .DS_Store*
+*.txt
